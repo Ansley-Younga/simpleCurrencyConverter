@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
+      crossorigin="anonymous"
+    ></script>
+    <title>Simple Currency Converter</title>
+    <style>
+      html {
+        height: 100%;
+      }
+
+      body {
+        background-image: url("goldBackground.jpg");
+        background-repeat: no-repeat;
+        background-size: cover;
+        color: white;
+        min-height: 100%;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+      }
+      .mainContainer {
+        /* background-color: red; */
+        margin-top: 3em;
+      }
+
+      input {
+        width: 100%;
+        max-width: 100%;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        border-radius: 5px;
+      }
+      select {
+        width: 100%;
+        max-width: 80%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mainContainer">
+      <form id="getConversion">
+        <input type="text" placeholder="CONVERT FROM" id="fromCountry" />
+        <input
+          type="text"
+          placeholder="CONVERT TO"
+          id="toCountry"
+          class="mt-1"
+        />
+        <input
+          type="number"
+          placeholder="Input Amount"
+          id="amount"
+          class="mt-1"
+        />
+        <input
+          type="submit"
+          value="CONVERT CURRENCY"
+          class="btn btn-primary mt-2"
+        />
+        <div id="getConversionDisplay"></div>
+      </form>
+    </div>
+
+    <hr />
+
+    <div class="container">
+      <small>CLICK TO SEE COUNTRY CODES</small> <br />
+      <button class="btn btn-sm btn-success" id="checkCountry">
+        CHECK COUNTRY
+      </button>
+      <button class="btn btn-sm btn-danger" id="buttonClose">X</button>
+      <div id="showCountry"></div>
+    </div>
+
+    <script>
+      // Create OnClick Event Functionality to get Countries
+      document
+        .getElementById("checkCountry")
+        .addEventListener("click", getCountries);
+      // Function to call when CHECK COUNTRY is clicked.
+      function getCountries() {
+        var myHeaders = new Headers();
+        myHeaders.append("apikey", "aVm9DNOskcgIAliNY9d96a0LdUhxAC6c");
+
+        var requestOptions = {
+          method: "GET",
+          redirect: "follow",
+          headers: myHeaders,
+        };
+
+        fetch("https://api.apilayer.com/fixer/symbols", requestOptions)
+          .then((response) => response.text())
+          .then((result) => {
+            document.getElementById("showCountry").innerHTML = result;
+          })
+          .catch((error) => console.log("error", error));
+      }
+
+      //   close country list
+      document
+        .getElementById("buttonClose")
+        .addEventListener("click", closeCountryList);
+      function closeCountryList() {
+        document.getElementById("showCountry").innerHTML = " ";
+      }
+
+      //   create on-click functionality to get conversion between currencies
+      document
+        .getElementById("getConversion")
+        .addEventListener("click", getConversion);
+      // function to call conversion api feature
+      function getConversion(e) {
+        // create variables to store FROM & TO country as well as amount, and assign values to them
+        let fromCountry = document.getElementById("fromCountry").value;
+        let toCountry = document.getElementById("toCountry").value;
+        let amount = document.getElementById("amount").value;
+        e.preventDefault();
+
+        var myHeaders = new Headers();
+        myHeaders.append("apikey", "aVm9DNOskcgIAliNY9d96a0LdUhxAC6c");
+
+        var requestOptions = {
+          method: "GET",
+          redirect: "follow",
+          headers: myHeaders,
+        };
+
+        var currencyConvert =
+          "https://api.apilayer.com/fixer/convert?to=" +
+          toCountry +
+          "&from=" +
+          fromCountry +
+          "&amount=" +
+          amount;
+
+        fetch(currencyConvert, requestOptions)
+          .then((response) => response.text())
+          .then((result) => {
+            document.getElementById("getConversionDisplay").innerHTML = result;
+          })
+          .catch((error) => console.log("error", error));
+      }
+
+      //   let disp = document.getElementById("fromCountry").value;
+      //   alert(disp);
+    </script>
+  </body>
+</html>
